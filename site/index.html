@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="/static/css/style.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      /*
+      fetch('./settings')
+        .then((response) => response.json())
+        .then((json) => {
+        console.log(json)
+       
+    });
+    */
+    $.getJSON('/settings').done(res=>{
+      console.log(res)
+      $('#current-user span').text(res['user'])
+      var apiKey = document.getElementById("api-key")
+      apiKey.value = res['serverKey']
+    })
+    $("#update-api").click(function(e) {
+      var apiKey = document.getElementById("api-key").value
+      var apiURL= document.getElementById("api-url").value
+      var info = {'apiURL':apiURL, 'apiKEY':apiKey}
+     
+           $.ajax({
+              type: "POST",
+              url: "/SetAPI",
+              data: info //{"api-url": $("#api-url").val()}
+           })
+           .done(res => {
+              console.log(res)
+           });
+           e.preventDefault();
+         });
+
+
+    });
+  </script>
+</head>
+
+<body>
+  <h1> Scanner Config</h1>
+  <div id="current-user">
+    Current User:
+    <span></span>
+  </div>
+  <br>
+  <span> </span>
+  <input id="api-url" type="text"  name="length" size="50"/>
+  <input id="api-key" type="text"  name="length" size="50"/>
+  <button id="update-api">Update API Info</button>
+  
+
+</body>
+
+</html>
