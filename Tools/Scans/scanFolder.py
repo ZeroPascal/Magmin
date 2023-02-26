@@ -1,21 +1,19 @@
-
 import datetime
-import json
 import os
 import stat
 from pathlib import Path, PosixPath
 from db import Folder, addFiles, getFileByID, getFileByName_Path, getFilesFromFolder, getFolder, removeFiles
 import actions
 
-ignoreExtenstions = []#['.txt']
-def checkExtenstion(ex:str):
+ignoreExtenstions:list[str] = []#['.txt']
+def checkExtenstion(ex:str)->bool:
     try:
         return ignoreExtenstions.index(ex) == 0
     except:
         return True
 
 #https://stackoverflow.com/questions/55638905/how-to-convert-os-stat-result-to-a-json-that-is-an-object
-def stat_to_json(s_obj:stat) -> dict:
+def stat_to_json(s_obj) -> dict:
     return {k: getattr(s_obj, k) for k in dir(s_obj) if k.startswith('st_')}
 
 def processScan(path:PosixPath,files):

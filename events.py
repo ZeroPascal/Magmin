@@ -1,4 +1,5 @@
 from enum import Enum
+import typing
 
 
 class Events(Enum):
@@ -17,7 +18,7 @@ class Event(object):
 	def __isub__(self, handler): 
 		self.__eventhandlers.remove(handler) 
 		return self
-	def __call__(self, event:Events, payload:any): 
+	def __call__(self, event:Events, payload:typing.Any): 
 		for eventhandler in self.__eventhandlers: 
 			eventhandler(event,payload) 
     
