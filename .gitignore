@@ -2,6 +2,7 @@
 certs/
 my.db
 database.db
+bin/
 
 /site/node_modules
 # Byte-compiled / optimized / DLL files
