@@ -5,6 +5,7 @@ import stat
 from pathlib import Path, PosixPath
 from scannerDatabase import *
 import scannerActions as actions
+from .ffmpegScan import ffmpegScan
 
 ignoreExtenstions:list[str] = []#['.txt']
 def checkExtenstion(ex:str)->bool:
@@ -30,6 +31,7 @@ def processScan(folder,files):
             f = scannerDB.files.getFileByID(file['st_ino'])
             #print('Found File with same st_ino',f)
             if f:
+                ffmpegScan(f.path)
                 #print('     File Already Exists')
                 if f and f.name != file['name']:
                     print('Name Change:',file['name'])
@@ -45,12 +47,12 @@ def processScan(folder,files):
         except Exception as e:
             print('     New Or Modified File',e)
             f= scannerDB.files.getFileByName_Path(path=folder['root'],name=file['name'])
-            print(f)
+         
             if f:
-                print('File Changed:',file['name'])
+            #    print('File Changed:',file['name'])
                 file['lastAction']='Modified'
             else:
-                print('New File:',file['name'])
+            #    print('New File:',file['name'])
                 file['lastAction']='New'
         try:
             file.pop('st_file_attributes')
