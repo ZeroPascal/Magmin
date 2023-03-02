@@ -11,6 +11,7 @@ export function formatBytes(bytes:number, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
-export function formatTime(time:number){
-    return new Date(time).toISOString().substring(11, 19)
+export function formatTime(time:number):string{
+    const d=  new Date(time*1000)
+    return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+' '+d.getMonth()+'/'+d.getDay()+'/'+d.getFullYear()
 }

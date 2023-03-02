@@ -37,6 +37,8 @@ def processScan(folder,files):
                     new_files.append(file)
                 if f and f.st_mtime != file['st_mtime']:
                     print('Modified',file['name'], type(f.st_mtime), type(file['st_mtime']))
+                    file['lastAction']='Modified'
+                    
             else:
                 print('Issuse:',file['name'])
                 raise 'New File'

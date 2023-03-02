@@ -10,7 +10,7 @@ function MainPage(){
         <Toolbar sx={{backgroundColor:'gray'}}>
         <Logout/>
                         <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-                            Scanner
+                            Magmin Scanner
                         </Typography >
                         <Typography variant="body1" sx={{ color: 'black' }}>
                             v.{process.env.REACT_APP_VERSION}

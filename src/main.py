@@ -1,14 +1,12 @@
-
-
-from scannerDatabase import ScannerDatabase, scannerDB
-
+#from scannerDatabase import ScannerDatabase, scannerDB
+from dotenv import load_dotenv
 from scannerServer import start_server
-
-#scannerDB = ScannerDatabase()
+import os
 
 if __name__ == '__main__': 
     print('Starting Magmin')
 #    scannerDB = ScannerDatabase()
  #   scannerActions = ScannerActions(scannerDB)
-    start_server('asdf')
+    load_dotenv() 
+    start_server(os.getenv('SERVER_SECRET'))
     

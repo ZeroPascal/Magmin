@@ -5,28 +5,22 @@ import sys
 from flask import Flask, redirect,request, send_from_directory, url_for
 from flask_socketio import SocketIO
 from scannerDatabase import ScannerDatabase,scannerDB
+from definitions import ROOT_DIR
 from .socketHandler import SocketHandler
 from flask_login import LoginManager, login_required, login_user, logout_user
 
 
 
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    p = os.path.join(os.path.abspath("."), relative_path)
-    print(p)
-    return os.path.join(os.path.abspath("."), relative_path)
-
 def path():
     #root= os.path.abspath(os.path.dirname(__file__))
-    root = Path(__file__).parent.parent.parent
-    src = os.path.join(root,'static')
+    print('Root',ROOT_DIR)
+    root = Path(ROOT_DIR)
+    src = os.path.join(root,'static')   
     return src
 
 
-app = Flask(__name__,static_url_path='')
-
-
+app = Flask(__name__,static_folder=path(),static_url_path='')
+print('Static Location',app.static_folder)
 login_manager = LoginManager()
 login_manager.init_app(app)
 sio = SocketIO(app,logger=False,engineio_logger=False)
@@ -38,7 +32,7 @@ def start_server( server_secret:'str',host='0.0.0.0', port='5001'):
  #   global scannerDB
     app.secret_key=server_secret
     #scannerDB=database
-    sio.run(app,host=host, port=port) 
+    sio.run(app,host=host, port=port, allow_unsafe_werkzeug=True ) 
 
 SocketHandler(sio)
 log = logging.getLogger('werkzeug')
@@ -85,6 +79,7 @@ def logout():
 @login_required
 def home():
     return app.send_static_file('index.html')  # Return index.html from the static folder
+
 
 @app.route('/API/addDirectory/<directory>', methods=['POST']) 
 @login_required
