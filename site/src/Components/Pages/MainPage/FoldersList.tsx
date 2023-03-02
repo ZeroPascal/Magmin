@@ -10,7 +10,7 @@ import { Folder } from "../../../app/Folders/foldersSlice"
 import { deleteDirectory, scanDirectory } from "../../../app/Socket/socketSenders"
 import { RootState } from "../../../app/store"
 import { getFilesFromFolder } from "../../../app/Files/filesSelectors";
-import { formatBytes } from "../../util/converters";
+import { formatBytes, formatTime } from "../../util/converters";
 
 function FoldersListRow(props:{folder:Folder}){
     const [open,setOpen]=useState(false)
@@ -46,6 +46,7 @@ function FoldersListRow(props:{folder:Folder}){
                         <TableCell key={'folderListRowFile_headFile_LastAction'+folder.name}>Last Action</TableCell>
                         <TableCell key={'folderListRowFile_headFile_size'+folder.name}>Size</TableCell>
                         <TableCell key={'folderListRowFile_headFile_birtht'+folder.name}>Made</TableCell>
+                        <TableCell key={'folderListRowFile_headFile_modt'+folder.name}>Modified</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody key={'folderListRowFile_body'+folder.name}>
@@ -55,7 +56,8 @@ function FoldersListRow(props:{folder:Folder}){
                                 <TableCell key={'folderListRowFile_name'+file.name}>{file.name}</TableCell>
                                 <TableCell key={'folderListRowFile_lastA'+file.name}>{file.lastAction}</TableCell>    
                                 <TableCell key={'folderListRowFile_sie'+file.name}>{formatBytes(file.st_size)   }</TableCell>
-                                <TableCell key={'folderListRowFile_birtht'+file.name}>{formatBytes(file.st_size)   }</TableCell>
+                                <TableCell key={'folderListRowFile_birtht'+file.name}>{formatTime(file.st_birthtime)}</TableCell>
+                                <TableCell key={'folderListRowFile_modt'+file.name}>{formatTime(file.st_mtime)}</TableCell>
                             </TableRow>
                         )
                     })

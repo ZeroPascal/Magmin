@@ -1,8 +1,10 @@
+import { Button } from "@mui/material"
+
 function Logout(){
 
     return(
         <form action='logout' method='post'>
-        <input type='submit' value='Log Out'></input>
+        <Button type='submit' variant="contained" value='Log Out'>Log Out</Button>
         </form>
     )
 }

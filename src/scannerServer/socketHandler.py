@@ -1,9 +1,11 @@
 import functools
-import actions
+#import actions
 from flask_login import current_user
 from flask_socketio import disconnect, emit
-from db import Folder, getFiles, getFolders
-from events import FolderEvents, FileEvents
+
+from scannerDatabase import *
+from scannerActions import actions
+from scannerEvents import FolderEventSub, FileEventSub
 
 def authenticated_only(f):
     @functools.wraps(f)
@@ -15,22 +17,25 @@ def authenticated_only(f):
     return wrapped
 
 def SocketHandler(sio):
-    global FolderEvents
-    global FileEvents
+    global FolderEventSub
+    global FileEventSub
+
+ 
     def sendFolders(event,folders):
+      #  print('Emitting Folders',event)
         sio.emit('SENDING_FOLDERS',folders)
 
-    FolderEvents+=sendFolders
+    FolderEventSub+=sendFolders
 
     def sendFiles(event,files):
         sio.emit('SENDING_FILES',files)
     
-    FileEvents+=sendFiles
+    FileEventSub+=sendFiles
 
     @sio.event
     def event(message,payload):
 
-        print('Event',message)
+    #    print('Event',message)
         sio.emit(message,payload)
 
 
@@ -39,8 +44,10 @@ def SocketHandler(sio):
     def connect():
         if current_user.is_authenticated:
             sio.emit('connect')
-            sio.emit('SENDING_FOLDERS',getFolders())
-            sio.emit('SENDING_FILES',getFiles())
+         
+            sio.emit('SENDING_FOLDERS',scannerDB.folders.getFolders())
+            sio.emit('SENDING_FILES',scannerDB.files.getFiles())
+           
 
         else:
             return 
@@ -52,7 +59,8 @@ def SocketHandler(sio):
     @sio.on('REMOVE_DIRECTORY')
     def removeDirectory(folderName:str):
         actions.removeDirectory(name=folderName)
-
+ 
     @sio.on('SCAN_DIRECTORY')
     def scanDirectory(folderName:str):
         actions.scanDirectory(name=folderName)
+       

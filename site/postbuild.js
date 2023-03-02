@@ -2,7 +2,7 @@ var path = require('path');
 const fs = require("fs");
 
 const targetSource = './build'; // Relative path to copy files from
-const targetDestination = '../static'; // Relative path to copy files to
+const targetDestination = '../src/static'; // Relative path to copy files to
 
 /**
  * Remove directory recursively

@@ -1,60 +1,60 @@
-import base64
-import json
 import logging
 import os
+from pathlib import Path
 import sys
-from typing import TypedDict
-from flask import Flask, jsonify, redirect,request, url_for
+from flask import Flask, redirect,request, send_from_directory, url_for
 from flask_socketio import SocketIO
-from db import getAdmins, getServerKey, start_database
-from socketHandler import SocketHandler
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from scannerDatabase import ScannerDatabase,scannerDB
+from definitions import ROOT_DIR
+from .socketHandler import SocketHandler
+from flask_login import LoginManager, login_required, login_user, logout_user
 
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
 
-start_database()
-app = Flask(__name__, static_url_path='') #resource_path('static') )
-app.secret_key = getServerKey()
+
+def path():
+    #root= os.path.abspath(os.path.dirname(__file__))
+    print('Root',ROOT_DIR)
+    root = Path(ROOT_DIR)
+    src = os.path.join(root,'static')   
+    return src
+
+
+app = Flask(__name__,static_folder=path(),static_url_path='')
+print('Static Location',app.static_folder)
 login_manager = LoginManager()
 login_manager.init_app(app)
 sio = SocketIO(app,logger=False,engineio_logger=False)
-
 login_manager.login_view = 'login'
+#scannerDB = None
+def start_server( server_secret:'str',host='0.0.0.0', port='5001'):
+    global app
+    global sio
+ #   global scannerDB
+    app.secret_key=server_secret
+    #scannerDB=database
+    sio.run(app,host=host, port=port, allow_unsafe_werkzeug=True ) 
 
-class User(UserMixin):
-    def __init__(self):
-        self.username =''
-        self.password=''
-    
-    def get_id(self):
-        return self.username
-
-class Users(TypedDict):
-    username:str
-    user: User
-
-users: Users ={}
-USERS = getAdmins()
-for user in USERS:
-    u = User()
-    u.username = user
-    u.password =USERS[user]
-    users[user] = u
+SocketHandler(sio)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 @login_manager.user_loader
 def load_user(username):
+    global scannerDB
     try:
-        return users[username]
+        a = scannerDB.users.checkAdmin(username)
+        return a
     except:
         return None
-
+def getUserRights(header:request):
+    print(header)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global scannerDB
     if request.method == 'POST':
-        user = users[request.form['username']]
+        user = scannerDB.users.checkAdmin([request.form['username']])
+        if not user:
+            return """No User Found"""
         if user.password != request.form['password'] :
             error = 'Invalid Credentials. Please try again.'
         else:
@@ -72,15 +72,14 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-SocketHandler(sio)
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+
 
 
 @app.route('/') 
 @login_required
 def home():
     return app.send_static_file('index.html')  # Return index.html from the static folder
+
 
 @app.route('/API/addDirectory/<directory>', methods=['POST']) 
 @login_required
@@ -92,5 +91,4 @@ if __name__ == '__main__':
     print('Started')
     sio.run(app,host='0.0.0.0', port='5001')  # Start the server Host 0.0.0.0 to listen on machine ip
     
-
 
