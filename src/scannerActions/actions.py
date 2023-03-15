@@ -11,7 +11,7 @@ def addDirectory(name:str,root:str,recursive:bool): #, callback:Callable[[None],
     FolderEventSub(FolderEvents.ADD_FOLDER,scannerDB.folders.addFolder(root,name,recursive))
 
 def removeDirectory(name:str):
-    FolderEventSub(FolderEvents.REMOVE_FOLDER,scannerDB.folders.removeFolder(name))
+    FolderEventSub(FolderEvents.REMOVE_FOLDER,scannerDB.removeFolder(name))
 
 def scanDirectory(name:str):
     scanFolder(scannerDB.folders.getFolder(name))

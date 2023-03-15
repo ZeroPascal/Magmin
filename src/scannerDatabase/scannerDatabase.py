@@ -23,6 +23,16 @@ class ScannerDatabase():
         self.db = db
         self.db.create_tables([UsersTable(self.baseModle),FoldersTable(self.baseModle),FilesTable(self.baseModle)])
         self.users.makeDefaultUsers()
+    
+    def removeFolder(self,name:str):
+        try:
+            deadFolder = self.folders.removeFolder(name)
+            self.files.removeFilesByFolder(deadFolder.root)
+        except Exception as e:
+            print('Could not delete folder:',name)
+            print(e)
+
+        return(self.folders.getFolders())
 
     
 scannerDB = ScannerDatabase()

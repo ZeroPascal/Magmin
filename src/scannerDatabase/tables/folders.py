@@ -48,7 +48,7 @@ class Folders():
             print('Could not delete folder:',name)
             print(e)
 
-        return(self.getFolders())
+        return(deadFolder)
     def updateFolderLastScan(self,folderName:str,time):
         try:
             folder =self.table.get(FoldersTable.name==folderName)
