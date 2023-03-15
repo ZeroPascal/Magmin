@@ -7,11 +7,14 @@ import scannerActions as actions
 from .ffmpegScan import ffmpegScan
 import pprint
 ignoreExtenstions:list[str] = []#['.txt']
-def checkExtenstion(ex:str)->bool:
+def checkExtenstion(ex:str,exList:list[str]=ignoreExtenstions)->bool:
     try:
-        return ignoreExtenstions.index(ex) == 0
+        return exList.index(ex) == 0
     except:
         return True
+
+probeExtenstions=['.mov','.jpg']
+
 
 #https://stackoverflow.com/questions/55638905/how-to-convert-os-stat-result-to-a-json-that-is-an-object
 def stat_to_json(s_obj) -> dict:
@@ -39,13 +42,12 @@ def processFile(file):
     except Exception as e:
         print('     New Or Modified File',file['root']+file['name'])
         f= scannerDB.files.getFileByName_Path(path=file['root'],name=file['name'])
-        print(f)
         if f:
             print(f)
             file['lastAction']='Modified'
         else:
             file['lastAction']='New'
-    
+    #Removes stats that are OSX only
     try:
             file.pop('st_file_attributes')
     except:
@@ -61,12 +63,13 @@ def processFile(file):
     try:
             file.pop('st_blocks')
     except Exception as e:
-            print('Scan Error',e)
+            pass
     if platform.system()=='Windows':
-            file['st_birthtime'] =file['st_ctime']
-   # if(file['lastAction']=='New' or file['lastAction']=='Modified'):           
-    try:
-            file.update(ffmpegScan(str(file['path'])))
+            file['st_birthtime'] =file['st_ctime']  
+    try:    
+                
+           # if(checkExtenstion(file['suffix'],probeExtenstions)):
+                file.update(ffmpegScan(str(file['path'])))
         
     except Exception as e:
             print('FFProbe Error',e)
@@ -108,6 +111,7 @@ def scanFolder(folder:Folder):
                 j['name'] = child.name
                 j['root'] = folder['root']
                 j['path'] = child.absolute()
+                j['suffix'] =child.suffix
                 files.append(j)
         
 

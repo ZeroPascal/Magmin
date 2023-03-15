@@ -7,6 +7,7 @@ class FilesTable(BaseModle):
     root = TextField() #ForeignKeyField(Folders,backref='folder')#
     path = TextField()
     name = TextField()
+    suffix= TextField()
     lastAction = TextField()
     st_ino = BigIntegerField(unique=True)
     st_atime = BigIntegerField()
@@ -77,7 +78,7 @@ class Files():
         try:
             return self.table.get(FilesTable.st_ino==st_ino)
         except:
-            print('No File Found by st_ino',st_ino)
+          #  print('No File Found by st_ino',st_ino)
             return None
     def getFileByName_Path(self,path,name):
         try:
