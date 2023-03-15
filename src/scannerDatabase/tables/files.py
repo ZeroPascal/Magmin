@@ -7,6 +7,7 @@ class FilesTable(BaseModle):
     root = TextField() #ForeignKeyField(Folders,backref='folder')#
     path = TextField()
     name = TextField()
+    suffix= TextField()
     lastAction = TextField()
     st_ino = BigIntegerField(unique=True)
     st_atime = BigIntegerField()
@@ -27,15 +28,35 @@ class FilesTable(BaseModle):
     st_gen=BigIntegerField(null=True)
     st_gid=IntegerField()
     st_uid= BigIntegerField()
-
-
+    VFormat= TextField(null=True)
+    VCodecID= TextField(null=True)
+    VBitRate= TextField(null=True)
+    VWidth=IntegerField(null=True)
+    VHeight=IntegerField(null=True)
+    VFrameRateMode= TextField(null=True)
+    VFrameRate= TextField(null=True)
+    VDuration=IntegerField(null=True)
+    VFrameCount=IntegerField(null=True)
+    VEncoder=TextField(null=True)
+    VCreationTime= TextField(null=True)
+    AFormat= TextField(null=True)
+    AFormatSettings= TextField(null=True)
+    ACodecID= TextField(null=True)
+    ADuration= TextField(null=True)
+    AChannels= TextField(null=True)
+    AChannelsLayout= TextField(null=True)
+    ASamplingRate= TextField(null=True)
+    ABitDepth= TextField(null=True)
 
 class Files():
     def __init__(self,table:FilesTable):
         self.table= table
     def addFiles(self,files: list[FilesTable]):
         try:
-            self.table.insert_many(files).on_conflict('replace').execute()
+            for file in files:
+             #   print(file)
+                self.table.insert(file).on_conflict('replace').execute()
+          #  self.table.insert_many(files).on_conflict('replace').execute()
            
         except Exception as e:
             print('Could not add File',e)
@@ -57,11 +78,18 @@ class Files():
         try:
             return self.table.get(FilesTable.st_ino==st_ino)
         except:
-            print('No File Found by st_ino',st_ino)
+          #  print('No File Found by st_ino',st_ino)
             return None
     def getFileByName_Path(self,path,name):
         try:
-            return self.table.get(FilesTable.name==name and FilesTable.root == path)
+            print('Getting File',path,name)
+            return self.table.get(FilesTable.name==name,FilesTable.root == path)
+          #  return self.table.select().where(FilesTable.name==name and FilesTable.root ==path)
+        except:
+            pass
+    def removeFilesByFolder(self,root):
+        try:
+            self.table.delete().where(FilesTable.root==root).execute()
         except:
             pass
     def removeFiles(self,file_st_ino:list[int]):

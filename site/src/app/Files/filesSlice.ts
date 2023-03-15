@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export type File={
+    id: number,
     root :string,
     path :string,
     name : string,
@@ -23,7 +24,26 @@ export type File={
     st_flags: number,
     st_gen : number,
     st_gid : number,
-    st_uid: number
+    st_uid: number,
+    VFormat: string | null,
+    VCodecID: string | null,
+    VBitRate: string | null,
+    VWidth:number | null,
+    VHeight:number | null,
+    VFrameRateMode: string | null,
+    VFrameRate: string | null,
+    VDuration: number | null,
+    VFrameCount: number| null,
+    VEncoder: string | null,
+    VCreationTime: string | null,
+    AFormat: string | null,
+    AFormatSettings: string | null,
+    ACodecID: string | null,
+    ADuration: string | null,
+    AChannels: string | null,
+    AChannelsLayout: string | null,
+    ASamplingRate: string | null,
+    ABitDepth: string | null
 
 }
 
