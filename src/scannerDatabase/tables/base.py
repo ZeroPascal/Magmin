@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 from peewee import Model, SqliteDatabase
 
-from definitions import ROOT_DIR
-
-db = SqliteDatabase(os.path.join(ROOT_DIR,'database.db'))
+from definitions import EXE_DIR
+print(EXE_DIR)
+db = SqliteDatabase(os.path.join(EXE_DIR,'database.db'))
 
 class BaseModle(Model):
     class Meta:

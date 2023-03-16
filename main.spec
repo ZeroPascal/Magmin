@@ -7,8 +7,8 @@ block_cipher = None
 a = Analysis(
     ['src\\main.py'],
     pathex=['src'],
-    binaries=[],
-    datas=[('src\\static','static')],
+    binaries=[('src\\bin\\ffprobe.exe','bin')],
+    datas=[('src\\static','static'),('.env','.')],
     hiddenimports=[
    'engineio.async_drivers.eventlet', 
    'engineio.async_drivers.threading',
