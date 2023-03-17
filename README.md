@@ -11,6 +11,7 @@ To Run
 To Build
 - `pyinstaller main.spec`
 
-
+Newest Version Uses FFProbe and compiles with it's binaries baked in.
+Full credit to https://ffmpeg.org/ffprobe.html
 
 
