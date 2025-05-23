@@ -1,5 +1,5 @@
 import { File } from "../../../app/Files/filesSlice";
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { formatBytes, formatTime } from "../../util/converters";
 import { Box } from "@mui/material";
 
@@ -16,7 +16,16 @@ function FileList(props:{files:File[]}){
         {field:'VWidthXHeight',headerName:'Res'},
         {field:'VDuration',headerName:'Duration',width:150},
         {field:'AFormat',headerName:'Audio Format'},
-        {field:'AChannels',headerName:'Channel Info'}
+        {field:'AChannels',headerName:'Channel Inf'},
+        {field:'VFrameRate',headerName:'Frame Rate'},
+        {field:'VFrameCount',headerName:'Frame Count'},
+        {field:'Thumbnail',headerName:'Thumbnail',renderCell: (params: GridRenderCellParams<any>) => {
+            console.log(params.value)
+            if(params.value !== null)
+                return (<img key={params.value} style={{width:'100%', height:'100%'}}src={'/tumbnail/'+params.value} alt="Thumbnail" />)
+        
+        },
+    }
         
     ]
     const rows=()=>{
@@ -29,6 +38,7 @@ function FileList(props:{files:File[]}){
         if(file.AChannels){
             achannelinfo=file.AChannels+' '+file.AChannelsLayout
         }
+        let thumb= file.VFormat !==null? file.st_ino+'_thumb.png': null
         return {
             id:file.id,
             name:file.name,
@@ -40,7 +50,11 @@ function FileList(props:{files:File[]}){
             VWidthXHeight:vwxh,
             VDuration:file.VDuration,
             AFormat:file.AFormat,
-            AChannels:achannelinfo
+            AChannels:achannelinfo,
+            VFrameRate:file.VFrameRate,
+            VFrameCount:file.VFrameCount,
+            Thumbnail: thumb
+
         }
     })
     console.log(rows)
@@ -53,12 +67,8 @@ function FileList(props:{files:File[]}){
             rows={rows()}
             columns={columns}
             rowHeight={30}
-           
             autoHeight
-           
-        
-              
-             
+ 
         />
         </Box>
 

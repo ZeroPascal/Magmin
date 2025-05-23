@@ -13,5 +13,10 @@ export function formatBytes(bytes:number, decimals = 2) {
 
 export function formatTime(time:number):string{
     const d=  new Date(time*1000)
-    return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+' '+d.getMonth()+'/'+d.getDay()+'/'+d.getFullYear()
+    return d.toLocaleString()
+    //return d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+' '+d.getMonth()+'/'+d.getDay()+'/'
+  
 }   
+
+//d.getFullYear()+d.getMonth()+d.getDate+
+//d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+' '+d.getMonth()+'/'+d.getDay()+'/'

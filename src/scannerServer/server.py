@@ -2,10 +2,10 @@ import logging
 import os
 from pathlib import Path
 import sys
-from flask import Flask, redirect,request, send_from_directory, url_for
+from flask import Flask, redirect,request, send_from_directory, url_for, abort
 from flask_socketio import SocketIO
 from scannerDatabase import ScannerDatabase,scannerDB
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, THUMBNAIL_DIR
 from .socketHandler import SocketHandler
 from flask_login import LoginManager, login_required, login_user, logout_user
 
@@ -87,8 +87,28 @@ def addDirectory(directory:str):
     print(directory)
     return "Okay"
 
+@app.route('/tumbnail/<path:filename>')
+def get_image(filename):
+
+    # Only allow files with safe extensions
+    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+    file_ext = os.path.splitext(filename)[1].lower()
+   
+    if file_ext not in allowed_extensions:
+       # print('invalid extension')
+        abort(400, description="Invalid file extension")
+
+    # Prevent path traversal
+    if '..' in filename or filename.startswith('/'):
+        #print('format error')
+        abort(400, description="Invalid filename")
+    try:
+        return send_from_directory('thumbnails',filename)
+    except FileNotFoundError:  
+        print('File Not found') 
+        abort(404, description="File not found")
+
 if __name__ == '__main__': 
     print('Started')
     sio.run(app,host='0.0.0.0', port='5001')  # Start the server Host 0.0.0.0 to listen on machine ip
     
-

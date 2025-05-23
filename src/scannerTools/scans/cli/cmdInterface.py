@@ -1,7 +1,33 @@
  
 import platform
 import subprocess
+from definitions import ROOT_DIR
+import os
 
+
+def prepPaths(filePath:str, sub='', exe='ffprobe'):
+    root =''
+    try:
+        if(platform.system() != 'Windows'):
+            
+                filePath = filePath.replace(' ','\ ')
+                if(exe):
+                    root = os.path.join(ROOT_DIR,'bin',exe)
+                else:
+                    root = os.path.join(ROOT_DIR,'bin',sub)
+                root = root.replace(' ','\ ')
+        if(platform.system() == 'Windows'):
+                filePath = filePath.replace(' ','` ')
+                filePath = '"'+filePath+'"'
+                if(exe):
+                    root = os.path.join(ROOT_DIR,'bin',sub,exe+'.exe')
+                else:
+                    root = os.path.join(ROOT_DIR,'bin',sub)
+                root = root.replace(' ','` ')
+    except:
+         pass
+
+    return (root,filePath)
 
 def cmdInterface(cmd:str,timeout=5):
     """Takes a CLI Command as a string, returns outputs"""

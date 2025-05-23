@@ -3,6 +3,7 @@ certs/
 my.db
 database.db
 src/bin/*
+src/scannerServer/thumbnails/*
 
 /site/node_modules
 # Byte-compiled / optimized / DLL files

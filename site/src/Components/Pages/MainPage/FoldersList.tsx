@@ -12,6 +12,7 @@ import { RootState } from "../../../app/store"
 import { getFilesFromFolder } from "../../../app/Files/filesSelectors";
 
 import FileList from "./FileList";
+import { red } from "@mui/material/colors";
 
 function FoldersListRow(props:{folder:Folder}){
     const [open,setOpen]=useState(false)
@@ -60,7 +61,7 @@ function FoldersList(){
     return(
         <div key='FoldersList'>
             <Typography fontSize={25} align='left'>Existing Folders</Typography>
-           <TableContainer component={Paper}>
+           <TableContainer  component={Paper}>
             <Table key='folderList_table'>
                 <TableHead key='folderlist_tablehead'>
                     <TableCell/>

@@ -76,7 +76,7 @@ class Files():
         return f
     def getFileByID(self,st_ino:int)->FilesTable | None:
         try:
-            return self.table.get(FilesTable.st_ino==st_ino)
+            return list(self.table.select().where(FilesTable.st_ino==st_ino).dicts())[0]
         except:
           #  print('No File Found by st_ino',st_ino)
             return None

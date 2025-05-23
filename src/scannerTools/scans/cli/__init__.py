@@ -1,1 +1,1 @@
-from .cmdInterface import cmdInterface
+from .cmdInterface import cmdInterface, prepPaths
